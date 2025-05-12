@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./utils/db');
 const taskRoutes = require('./routes/taskRoutes');
 const errorHandler = require('./middleware/errorHandler');
+const cors = require('cors');
+
 
 dotenv.config();
 
@@ -11,6 +13,7 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use('/api', taskRoutes); //This line mounts the taskRoutes at the /api path.
+app.use(cors());
 
 
 app.get('/', (req, res) => {
