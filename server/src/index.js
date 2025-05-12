@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const connectDB = require('./utils/db');
 
 dotenv.config();
 
@@ -12,6 +13,17 @@ app.get('/', (req, res) => {
   res.send('TODO App Backend');
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+connectDB().then(() => {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 });
+
+
+
+
+
+
+
+
+
