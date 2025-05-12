@@ -1,3 +1,5 @@
+//Purpose: Define the schema for the Task model.
+
 const mongoose = require('mongoose');
 
 const TaskSchema = new mongoose.Schema({

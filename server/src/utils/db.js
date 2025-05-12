@@ -1,3 +1,6 @@
+//Purpose: Set up a reusable function to connect the backend to MongoDB Atlas using Mongoose.
+
+
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
@@ -15,6 +18,6 @@ const connectDB = async () => {
 
 module.exports = connectDB;
 
-//Purpose: Set up a reusable function to connect the backend to MongoDB Atlas using Mongoose.
+
 
 
