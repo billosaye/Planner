@@ -1,3 +1,8 @@
+// These control what components/pages are displayed in the browser when a user navigates to different URLs in your application.
+
+
+
+
 import { createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import TaskList from './components/task/TaskList';
 import TaskForm from './components/form/TaskForm';

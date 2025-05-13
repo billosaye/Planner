@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TaskItem from './TaskItem';
 import useTaskStore from '../../store/taskStore';
 
 const TaskList: React.FC = () => {
   const tasks = useTaskStore((state) => state.tasks);
+  const fetchTasks = useTaskStore((state) => state.fetchTasks);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <div>

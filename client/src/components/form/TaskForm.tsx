@@ -6,10 +6,10 @@ const TaskForm: React.FC = () => {
   const [description, setDescription] = useState('');
   const addTask = useTaskStore((state) => state.addTask);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-    addTask(title, description || undefined);
+    await addTask(title, description || undefined);
     setTitle('');
     setDescription('');
   };

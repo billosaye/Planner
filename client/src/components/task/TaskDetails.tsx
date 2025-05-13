@@ -1,5 +1,5 @@
-import React, { useState, FormEvent } from 'react';
-import { useParams, Link } from '@tanstack/react-router';
+import React, { useState, FormEvent, useEffect } from 'react';
+import { useParams, Link, useNavigate } from '@tanstack/react-router';
 import useTaskStore from '../../store/taskStore';
 
 interface Task {
@@ -13,19 +13,39 @@ interface Task {
 
 const TaskDetails: React.FC = () => {
   const { id } = useParams({ from: '/tasks/$id' });
+  const navigate = useNavigate();
   const tasks = useTaskStore((state) => state.tasks);
-  const toggleTask = useTaskStore((state) => state.toggleTask);
+  const updateTask = useTaskStore((state) => state.updateTask);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
   const task = tasks.find((t) => t._id === id);
 
   const [title, setTitle] = useState(task?.title || '');
   const [description, setDescription] = useState(task?.description || '');
   const [completed, setCompleted] = useState(task?.completed || false);
 
-  const handleSave = (e: FormEvent) => {
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title);
+      setDescription(task.description || '');
+      setCompleted(task.completed);
+    }
+  }, [task]);
+
+  const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     if (!task || !title.trim()) return;
-    toggleTask(task._id);
-    setCompleted(task.completed);
+    await updateTask(task._id, {
+      title,
+      description: description || undefined,
+      completed,
+    });
+    navigate({ to: '/' });
+  };
+
+  const handleDelete = async () => {
+    if (!task) return;
+    await deleteTask(task._id);
+    navigate({ to: '/' });
   };
 
   if (!task) {
@@ -76,7 +96,7 @@ const TaskDetails: React.FC = () => {
             <input
               type="checkbox"
               checked={completed}
-              onChange={() => toggleTask(task._id)}
+              onChange={() => setCompleted(!completed)}
               className="mr-2"
             />
             <span className="text-gray-700">Completed</span>
@@ -88,6 +108,13 @@ const TaskDetails: React.FC = () => {
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             Save
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Delete
           </button>
           <Link
             to="/"

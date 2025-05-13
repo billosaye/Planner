@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import api from '../services/api';
 
 interface Task {
   _id: string;
@@ -11,48 +12,54 @@ interface Task {
 
 interface TaskState {
   tasks: Task[];
-  addTask: (title: string, description?: string) => void;
-  toggleTask: (id: string) => void;
+  fetchTasks: () => Promise<void>;
+  addTask: (title: string, description?: string) => Promise<void>;
+  updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
 }
 
 const useTaskStore = create<TaskState>((set) => ({
-  tasks: [
-    {
-      _id: '1',
-      title: 'Buy groceries',
-      description: 'Milk, eggs, bread',
-      completed: false,
-      createdAt: '2025-05-12T12:00:00.000Z',
-      updatedAt: '2025-05-12T12:00:00.000Z',
-    },
-    {
-      _id: '2',
-      title: 'Finish project',
-      completed: true,
-      createdAt: '2025-05-12T12:00:00.000Z',
-      updatedAt: '2025-05-12T12:00:00.000Z',
-    },
-  ],
-  addTask: (title: string, description?: string) =>
-    set((state) => ({
-      tasks: [
-        ...state.tasks,
-        {
-          _id: Date.now().toString(),
-          title,
-          description,
-          completed: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ],
-    })),
-  toggleTask: (id: string) =>
-    set((state) => ({
-      tasks: state.tasks.map((task) =>
-        task._id === id ? { ...task, completed: !task.completed, updatedAt: new Date().toISOString() } : task
-      ),
-    })),
+  tasks: [],
+  fetchTasks: async () => {
+    try {
+      const response = await api.get('/tasks');
+      set({ tasks: response.data });
+    } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+    }
+  },
+  addTask: async (title: string, description?: string) => {
+    try {
+      const response = await api.post('/tasks', { title, description });
+      set((state) => ({
+        tasks: [...state.tasks, response.data],
+      }));
+    } catch (error) {
+      console.error('Failed to add task:', error);
+    }
+  },
+  updateTask: async (id: string, updates: Partial<Task>) => {
+    try {
+      const response = await api.put(`/tasks/${id}`, updates);
+      set((state) => ({
+        tasks: state.tasks.map((task) =>
+          task._id === id ? response.data : task
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
+  },
+  deleteTask: async (id: string) => {
+    try {
+      await api.delete(`/tasks/${id}`);
+      set((state) => ({
+        tasks: state.tasks.filter((task) => task._id !== id),
+      }));
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  },
 }));
 
 export default useTaskStore;
