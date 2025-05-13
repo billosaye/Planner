@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@tanstack/react-router';
 import useTaskStore from '../../store/taskStore';
 
 interface Task {
@@ -20,14 +21,15 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   return (
     <div className="bg-white p-4 mb-4 rounded shadow-md flex justify-between items-center">
       <div>
-        <h3
+        <Link
+          to="/tasks/$id"
+          params={{ id: task._id }}
           className={`text-lg font-semibold cursor-pointer ${
             task.completed ? 'line-through text-gray-500' : ''
           }`}
-          onClick={() => toggleTask(task._id)}
         >
           {task.title}
-        </h3>
+        </Link>
         {task.description && <p className="text-gray-600">{task.description}</p>}
         <p className="text-sm text-gray-500">
           Created: {new Date(task.createdAt).toLocaleDateString()}
@@ -38,6 +40,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
           className={`px-2 py-1 rounded text-sm ${
             task.completed ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
           }`}
+          onClick={() => toggleTask(task._id)}
         >
           {task.completed ? 'Completed' : 'Pending'}
         </span>

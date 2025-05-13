@@ -1,14 +1,10 @@
 import React from 'react';
-import Layout from './components/layout/Layout';
-import TaskList from './components/task/TaskList';
-import TaskForm from './components/form/TaskForm';
+import { RouterProvider } from '@tanstack/react-router';
+import router from './router';
 
 const App: React.FC = () => {
   return (
-    <Layout>
-      <TaskForm />
-      <TaskList />
-    </Layout>
+    <RouterProvider router={router} />
   );
 };
 
