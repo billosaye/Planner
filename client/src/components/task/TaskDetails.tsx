@@ -17,6 +17,8 @@ const TaskDetails: React.FC = () => {
   const tasks = useTaskStore((state) => state.tasks);
   const updateTask = useTaskStore((state) => state.updateTask);
   const deleteTask = useTaskStore((state) => state.deleteTask);
+  const loading = useTaskStore((state) => state.loading);
+  const error = useTaskStore((state) => state.error);
   const task = tasks.find((t) => t._id === id);
 
   const [title, setTitle] = useState(task?.title || '');
@@ -39,20 +41,25 @@ const TaskDetails: React.FC = () => {
       description: description || undefined,
       completed,
     });
-    navigate({ to: '/' });
+    if (!error) navigate({ to: '/' });
   };
 
   const handleDelete = async () => {
     if (!task) return;
     await deleteTask(task._id);
-    navigate({ to: '/' });
+    if (!error) navigate({ to: '/' });
   };
 
   if (!task) {
     return (
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-4">Task Not Found</h2>
-        <Link to="/" className="text-blue-600 hover:underline">
+      <div className="p-4 sm:p-6">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Task Not Found
+        </h2>
+        <Link
+          to="/"
+          className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
+        >
           Back to Home
         </Link>
       </div>
@@ -60,11 +67,24 @@ const TaskDetails: React.FC = () => {
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Task Details</h2>
-      <form onSubmit={handleSave} className="bg-white p-4 rounded shadow-md">
+    <div className="p-4 sm:p-6">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
+        Edit Task
+      </h2>
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+      <form
+        onSubmit={handleSave}
+        className="bg-white p-6 rounded-lg shadow-md transition-all duration-300"
+      >
         <div className="mb-4">
-          <label htmlFor="title" className="block text-gray-700 mb-1">
+          <label
+            htmlFor="title"
+            className="block text-gray-700 font-medium mb-1"
+          >
             Title
           </label>
           <input
@@ -73,12 +93,16 @@ const TaskDetails: React.FC = () => {
             name="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             placeholder="Enter task title"
+            disabled={loading}
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="description" className="block text-gray-700 mb-1">
+          <label
+            htmlFor="description"
+            className="block text-gray-700 font-medium mb-1"
+          >
             Description
           </label>
           <textarea
@@ -86,39 +110,57 @@ const TaskDetails: React.FC = () => {
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             placeholder="Enter task description"
             rows={3}
+            disabled={loading}
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-6">
           <label className="flex items-center">
             <input
               type="checkbox"
               checked={completed}
               onChange={() => setCompleted(!completed)}
-              className="mr-2"
+              className="mr-2 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              disabled={loading}
             />
-            <span className="text-gray-700">Completed</span>
+            <span className="text-gray-700 font-medium">Completed</span>
           </label>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center disabled:bg-blue-400"
+            disabled={loading}
           >
-            Save
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                Saving...
+              </div>
+            ) : (
+              'Save'
+            )}
           </button>
           <button
             type="button"
             onClick={handleDelete}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="w-full sm:w-auto bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center disabled:bg-red-400"
+            disabled={loading}
           >
-            Delete
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                Deleting...
+              </div>
+            ) : (
+              'Delete'
+            )}
           </button>
           <Link
             to="/"
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+            className="w-full sm:w-auto bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors duration-200 text-center"
           >
             Cancel
           </Link>

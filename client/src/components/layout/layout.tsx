@@ -7,18 +7,23 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-blue-600 text-white p-4">
-        <div className="flex justify-between items-center max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold">TODO App</h1>
-          <nav>
-            <Link to="/" className="text-white hover:underline mr-4">
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-blue-700 text-white shadow-lg">
+        <div className="flex justify-between items-center max-w-6xl mx-auto p-4 sm:p-6">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            TODO App
+          </h1>
+          <nav className="space-x-4 sm:space-x-6">
+            <Link
+              to="/"
+              className="text-white hover:text-blue-200 transition-colors duration-200 text-sm sm:text-base"
+            >
               Home
             </Link>
           </nav>
         </div>
       </header>
-      <main className="p-4 max-w-4xl mx-auto">{children}</main>
+      <main className="max-w-6xl mx-auto p-4 sm:p-6">{children}</main>
     </div>
   );
 };

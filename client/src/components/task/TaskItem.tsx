@@ -23,31 +23,39 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   };
 
   return (
-    <div className="bg-white p-4 mb-4 rounded shadow-md flex justify-between items-center">
-      <div>
+    <div
+      className="bg-white p-4 sm:p-6 rounded-lg shadow-md flex flex-col sm:flex-row justify-between items-start sm:items-center hover:shadow-lg transition-all duration-200"
+    >
+      <div className="flex-1">
         <Link
           to="/tasks/$id"
           params={{ id: task._id }}
-          className={`text-lg font-semibold cursor-pointer ${
+          className={`text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors duration-200 ${
             task.completed ? 'line-through text-gray-500' : ''
           }`}
         >
           {task.title}
         </Link>
-        {task.description && <p className="text-gray-600">{task.description}</p>}
-        <p className="text-sm text-gray-500">
+        {task.description && (
+          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
+            {task.description}
+          </p>
+        )}
+        <p className="text-gray-500 text-xs sm:text-sm mt-1">
           Created: {new Date(task.createdAt).toLocaleDateString()}
         </p>
       </div>
-      <div>
-        <span
-          className={`px-2 py-1 rounded text-sm ${
-            task.completed ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
-          }`}
+      <div className="mt-3 sm:mt-0 sm:ml-4">
+        <button
           onClick={handleToggle}
+          className={`px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 ${
+            task.completed
+              ? 'bg-green-100 text-green-800 hover:bg-green-200'
+              : 'bg-red-100 text-red-800 hover:bg-red-200'
+          }`}
         >
           {task.completed ? 'Completed' : 'Pending'}
-        </span>
+        </button>
       </div>
     </div>
   );
