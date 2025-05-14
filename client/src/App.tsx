@@ -1,7 +1,11 @@
-export default function App() {
+import React from 'react';
+import { RouterProvider } from '@tanstack/react-router';
+import router from './router';
+
+const App: React.FC = () => {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-  )
-}
+    <RouterProvider router={router} />
+  );
+};
+
+export default App;
